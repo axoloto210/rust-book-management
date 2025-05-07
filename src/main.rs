@@ -1,7 +1,9 @@
 use std::net::{Ipv4Addr, SocketAddr};
 
-use axum::{routing::get, Router};
+use axum::{http::StatusCode, routing::get, Router};
 use tokio::net::TcpListener;
+
+use anyhow::Result;
 
 
 
@@ -10,20 +12,23 @@ async fn hello_world () -> &'static str{
     "Hello World!"
 }
 
+pub async fn health_check() -> StatusCode {
+    StatusCode::OK
+}
 
 #[tokio::main]
-async fn main() {
+async fn main() -> Result<()> {
 
-    let app = Router::new().route("/hello", get(hello_world));
+    let app = Router::new().route("/health", get(health_check));
 
     let addr = SocketAddr::new(Ipv4Addr::LOCALHOST.into(), 8080);
 
-    let listner = TcpListener::bind(addr).await.unwrap();
+    let listner = TcpListener::bind(addr).await?; //?演算子はその時点でエラーが出ると呼び出し元の関数へとエラーを伝播させる。
 
     println!("Listening on {}", addr);
 
 
-    axum::serve(listner, app).await.unwrap();
+    Ok(axum::serve(listner, app).await?)
 
 
 }
