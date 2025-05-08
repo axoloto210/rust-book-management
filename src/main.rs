@@ -31,9 +31,9 @@ fn connect_database_with(cfg: DatabaseConfig) -> PgPool {
 }
 
 // // async関数の場合には'static をつけておかないと、文字列がFuture解決前にdropしてしまい、ダングリングポイントとなってしまう。
-// async fn hello_world() -> &'static str {
-//     "Hello World!"
-// }
+async fn hello_world() -> &'static str {
+    "Hello World!"
+}
 
 pub async fn health_check() -> StatusCode {
     StatusCode::OK
@@ -85,4 +85,10 @@ async fn health_check_works() {
 async fn health_check_db_works(pool: sqlx::PgPool) {
     let status_code  = health_check_db(State(pool)).await;
     assert_eq!(status_code, StatusCode::OK);
+}
+
+#[tokio::test]
+async fn check_hello_world_works() {
+    let str = hello_world().await;
+    assert_eq!(str,"Hello World!")
 }
