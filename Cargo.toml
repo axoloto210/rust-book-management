@@ -12,6 +12,11 @@ members = ["api", "kernel", "adapter", "shared", "registry"]
 
 
 [workspace.dependencies]
+adapter = {path = "./adapter"}
+api = {path = "./api"}
+kernel = {path = "./kernel"}
+registry = {path = "./registry"}
+shared = {path = "./shared"}
 anyhow = "1.0.98"
 axum = { version = "0.7.5", features = ["macros"] }
 sqlx = { version = "0.8.5", features = [

@@ -7,28 +7,22 @@ use anyhow::Result;
 
 use sqlx::{PgPool, postgres::PgConnectOptions};
 
-struct DatabaseConfig {
-    pub host: String,
-    pub port: u16,
-    pub username: String,
-    pub password: String,
-    pub database: String,
-}
 
-impl From<DatabaseConfig> for PgConnectOptions {
-    fn from(cfg: DatabaseConfig) -> Self {
-        Self::new()
-            .host(&cfg.host)
-            .port(cfg.port)
-            .username(&cfg.username)
-            .password(&cfg.password)
-            .database(&cfg.database)
-    }
-}
 
-fn connect_database_with(cfg: DatabaseConfig) -> PgPool {
-    PgPool::connect_lazy_with(cfg.into())
-}
+// impl From<DatabaseConfig> for PgConnectOptions {
+//     fn from(cfg: DatabaseConfig) -> Self {
+//         Self::new()
+//             .host(&cfg.host)
+//             .port(cfg.port)
+//             .username(&cfg.username)
+//             .password(&cfg.password)
+//             .database(&cfg.database)
+//     }
+// }
+
+// fn connect_database_with(cfg: DatabaseConfig) -> PgPool {
+//     PgPool::connect_lazy_with(cfg.into())
+// }
 
 // // async関数の場合には'static をつけておかないと、文字列がFuture解決前にdropしてしまい、ダングリングポイントとなってしまう。
 async fn hello_world() -> &'static str {
