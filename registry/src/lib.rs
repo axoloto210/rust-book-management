@@ -1,7 +1,7 @@
 use std::sync::Arc;
 
 use adapter::{database::ConnectionPool, repository::health::HealthCheckRepositoryImpl};
-use kernel::repositoru::health::HealthCheckRepository;
+use kernel::repository::health::HealthCheckRepository;
 
 
 #[derive(Clone)]
