@@ -36,7 +36,7 @@ JAEGER_PORT = 6831
 run_task = [
     { name = [
         "compose-up-db",
-        "migrate",
+        # "migrate",
         "compose-up-redis",
     ] },
 ]
