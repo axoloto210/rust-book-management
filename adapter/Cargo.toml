@@ -8,9 +8,5 @@ kernel.workspace = true
 shared.workspace = true
 async-trait.workspace = true
 derive-new.workspace = true
-
 anyhow.workspace = true
 sqlx.workspace = true
-
-[workspace.dependencies]
-derive-new = "0.6.0"
