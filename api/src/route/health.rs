@@ -9,6 +9,6 @@ pub fn build_health_check_routers() -> Router<AppRegistry> {
     .route("/", get(health_check))
     .route("/db", get(health_check_db));
 
-    Router::new().nest("health", routers)
+    Router::new().nest("/health", routers)
 
 }
