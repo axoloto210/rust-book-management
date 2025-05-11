@@ -8,39 +8,6 @@ use anyhow::Result;
 use sqlx::{PgPool, postgres::PgConnectOptions};
 
 
-
-// impl From<DatabaseConfig> for PgConnectOptions {
-//     fn from(cfg: DatabaseConfig) -> Self {
-//         Self::new()
-//             .host(&cfg.host)
-//             .port(cfg.port)
-//             .username(&cfg.username)
-//             .password(&cfg.password)
-//             .database(&cfg.database)
-//     }
-// }
-
-// fn connect_database_with(cfg: DatabaseConfig) -> PgPool {
-//     PgPool::connect_lazy_with(cfg.into())
-// }
-
-// // async関数の場合には'static をつけておかないと、文字列がFuture解決前にdropしてしまい、ダングリングポイントとなってしまう。
-async fn hello_world() -> &'static str {
-    "Hello World!"
-}
-
-pub async fn health_check() -> StatusCode {
-    StatusCode::OK
-}
-
-async fn health_check_db (State(db): State<PgPool>) -> StatusCode {
-let connection_result = sqlx::query("SELECT 1").fetch_one(&db).await;
-match connection_result {
-    Ok(_) => StatusCode::OK,
-    Err(_) => StatusCode::INTERNAL_SERVER_ERROR,
-}
-}
-
 #[tokio::main]
 async fn main() -> Result<()> {
 
