@@ -11,10 +11,10 @@ pub struct HealthCheckRepositoryImpl {
 
 #[async_trait]
 impl HealthCheckRepository for HealthCheckRepositoryImpl {
-    async fn check_db (&self) -> bool {
+    async fn check_db(&self) -> bool {
         sqlx::query("SELECT 1")
-        .fetch_one(self.db.inner_ref())
-        .await
-        .is_ok()
+            .fetch_one(self.db.inner_ref())
+            .await
+            .is_ok()
     }
 }

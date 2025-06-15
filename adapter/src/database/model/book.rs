@@ -1,8 +1,6 @@
 use kernel::model::book::Book;
 use uuid::Uuid;
 
-
-
 pub struct BookRow {
     pub book_id: Uuid,
     pub title: String,
@@ -25,7 +23,11 @@ pub struct BookRow {
 impl From<BookRow> for Book {
     fn from(value: BookRow) -> Self {
         let BookRow {
-            book_id,title,author,isbn,description,
+            book_id,
+            title,
+            author,
+            isbn,
+            description,
         } = value;
         Self {
             id: book_id,
