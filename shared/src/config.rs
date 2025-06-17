@@ -1,7 +1,7 @@
 use anyhow::Result;
 
 pub struct AppConfig {
-    pub database: DatabaseConfig
+    pub database: DatabaseConfig,
 }
 
 impl AppConfig {
@@ -13,7 +13,7 @@ impl AppConfig {
             password: std::env::var("DATABASE_PASSWORD")?,
             database: std::env::var("DATABASE_NAME")?,
         };
-        Ok(Self {database})
+        Ok(Self { database })
     }
 }
 
