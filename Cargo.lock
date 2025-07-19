@@ -16,6 +16,7 @@ dependencies = [
  "secrecy",
  "shared",
  "sqlx",
+ "uuid",
 ]
 
 [[package]]
@@ -1220,6 +1221,7 @@ dependencies = [
  "shared",
  "sqlx",
  "strum",
+ "uuid",
 ]
 
 [[package]]
@@ -1951,6 +1953,7 @@ dependencies = [
  "tracing-subscriber",
  "utoipa",
  "utoipa-redoc",
+ "uuid",
 ]
 
 [[package]]

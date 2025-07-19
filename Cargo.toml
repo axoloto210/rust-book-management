@@ -65,6 +65,7 @@ tokio.workspace = true
 axum.workspace = true
 sqlx.workspace = true
 async-trait.workspace = true
+uuid.workspace = true
 
 tower-http = { version = "0.5.0", features = ["cors", "trace"] }
 utoipa.workspace = true
