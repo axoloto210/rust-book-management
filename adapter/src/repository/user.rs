@@ -101,34 +101,33 @@ impl UserRepository for UserRepositoryImpl {
     }
 
     async fn update_password(&self, event: UpdateUserPassword) -> AppResult<()> {
-        todo!()
-        // let mut tx = self.db.begin().await?;
-        // let original_password_hash = sqlx::query!(
-        //     r#"
-        //         SELECT password_hash FROM users WHERE user_id = $1;
-        //     "#,
-        //     event.user_id as _
-        // )
-        // .fetch_one(&mut *tx)
-        // .await
-        // .map_err(AppError::SpecificOperationError)?
-        // .password_hash;
-        // // 現在のパスワードが正しいかを検証する
-        // verify_password(&event.current_password, &original_password_hash)?;
-        // // 新しいパスワードのハッシュに置き換える
-        // let new_password_hash = hash_password(&event.new_password)?;
-        // sqlx::query!(
-        //     r#"
-        //         UPDATE users SET password_hash = $2 WHERE user_id = $1;
-        //     "#,
-        //     event.user_id as _,
-        //     new_password_hash,
-        // )
-        // .execute(&mut *tx)
-        // .await
-        // .map_err(AppError::SpecificOperationError)?;
-        // tx.commit().await.map_err(AppError::TransactionError)?;
-        // Ok(())
+        let mut tx = self.db.begin().await?;
+        let original_password_hash = sqlx::query!(
+            r#"
+                SELECT password_hash FROM users WHERE user_id = $1;
+            "#,
+            event.user_id as _
+        )
+        .fetch_one(&mut *tx)
+        .await
+        .map_err(AppError::SpecificOperationError)?
+        .password_hash;
+        // 現在のパスワードが正しいかを検証する
+        verify_password(&event.current_password, &original_password_hash)?;
+        // 新しいパスワードのハッシュに置き換える
+        let new_password_hash = hash_password(&event.new_password)?;
+        sqlx::query!(
+            r#"
+                UPDATE users SET password_hash = $2 WHERE user_id = $1;
+            "#,
+            event.user_id as _,
+            new_password_hash,
+        )
+        .execute(&mut *tx)
+        .await
+        .map_err(AppError::SpecificOperationError)?;
+        tx.commit().await.map_err(AppError::TransactionError)?;
+        Ok(())
     }
 
     async fn update_role(&self, event: UpdateUserRole) -> AppResult<()> {
