@@ -1,21 +1,23 @@
 use std::net::{Ipv4Addr, SocketAddr};
+use std::sync::Arc;
 
 use adapter::database::connect_database_with;
+use adapter::redis::RedisClient;
 use anyhow::Result;
-use api::route::{book::build_book_routers, health::build_health_check_routers};
+use api::route::{auth, v1};
 use axum::Router;
 use registry::AppRegistry;
 use shared::config::AppConfig;
 use tokio::net::TcpListener;
 
-use shared::env::{which, Environment};
+use shared::env::{Environment, which};
+use tracing_subscriber::EnvFilter;
 use tracing_subscriber::layer::SubscriberExt;
 use tracing_subscriber::util::SubscriberInitExt;
-use tracing_subscriber::EnvFilter;
 
 use anyhow::Context;
-use tower_http::trace::{DefaultMakeSpan, DefaultOnRequest, DefaultOnResponse, TraceLayer};
 use tower_http::LatencyUnit;
+use tower_http::trace::{DefaultMakeSpan, DefaultOnRequest, DefaultOnResponse, TraceLayer};
 use tracing::Level;
 
 #[tokio::main]
@@ -49,11 +51,13 @@ async fn bootstrap() -> Result<()> {
     let app_config = AppConfig::new()?;
     let pool = connect_database_with(&app_config.database);
 
-    let registry = AppRegistry::new(pool);
+    let kv = Arc::new(RedisClient::new(&app_config.redis)?);
+
+    let registry = AppRegistry::new(pool, kv, app_config);
 
     let app = Router::new()
-        .merge(build_health_check_routers())
-        .merge(build_book_routers())
+        .merge(v1::routes())
+        .merge(auth::routes())
         .layer(
             TraceLayer::new_for_http()
                 .make_span_with(DefaultMakeSpan::new().level(Level::INFO))
