@@ -6,9 +6,9 @@ use crate::{
     },
 };
 use axum::{
+    Json,
     extract::{Path, State},
     http::StatusCode,
-    Json,
 };
 use garde::Validate;
 use kernel::model::{id::UserId, user::event::DeleteUser};
@@ -105,4 +105,17 @@ pub async fn change_password(
         .await?;
 
     Ok(StatusCode::OK)
+}
+
+use crate::model::checkout::CheckoutsResponse;
+pub async fn get_checkouts(
+    user: AuthorizedUser,
+    State(registry): State<AppRegistry>,
+) -> AppResult<Json<CheckoutsResponse>> {
+    registry
+        .checkout_repository()
+        .find_unreturned_by_user_id(user.id())
+        .await
+        .map(CheckoutsResponse::from)
+        .map(Json)
 }
