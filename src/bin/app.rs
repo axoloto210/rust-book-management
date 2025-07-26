@@ -5,7 +5,8 @@ use adapter::database::connect_database_with;
 use adapter::redis::RedisClient;
 use anyhow::Result;
 use api::route::{auth, v1};
-use axum::Router;
+use axum::{http::Method, Router};
+
 use registry::AppRegistry;
 use shared::config::AppConfig;
 use tokio::net::TcpListener;
@@ -58,6 +59,7 @@ async fn bootstrap() -> Result<()> {
     let app = Router::new()
         .merge(v1::routes())
         .merge(auth::routes())
+        .layer(cors())
         .layer(
             TraceLayer::new_for_http()
                 .make_span_with(DefaultMakeSpan::new().level(Level::INFO))
@@ -81,4 +83,20 @@ async fn bootstrap() -> Result<()> {
                 error.cause_chain = ?e,error.message = %e, "Unexpected error"
             )
         })
+}
+
+//CORS設定をしない場合、以下のCORSエラーがブラウザのコンソール上に出る。
+//Access to fetch at 'http://localhost:8080/auth/login' from origin 'http://localhost:3000' has been blocked by CORS policy:
+// Response to preflight request doesn't pass access control check: No 'Access-Control-Allow-Origin' header is present on the requested resource.
+use tower_http::cors::{self, CorsLayer};
+fn cors() -> CorsLayer {
+    CorsLayer::new()
+    .allow_headers(cors::Any)
+    .allow_methods([
+        Method::GET,
+        Method::POST,
+        Method::PUT,
+        Method::DELETE,
+    ])
+    .allow_origin(cors::Any)
 }
